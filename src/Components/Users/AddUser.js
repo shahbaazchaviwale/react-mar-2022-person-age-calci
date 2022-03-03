@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import Card from '../UI/Card';
 import Button from '../UI/Button';
@@ -10,6 +10,10 @@ const AddUser = (props) => {
   const [enteredUsername, setEnteredUsername] = useState('');
   const [enteredAge, setEnteredAge] = useState('');
   const [error, setError] = useState();
+
+  // useRef method is used for to read the content of element
+   const nameInputRef = useRef();
+   const ageInputRef = useRef();
 
   const addUserHandler = (event) => {
     event.preventDefault();
@@ -27,9 +31,14 @@ const AddUser = (props) => {
       });
       return;
     }
-    props.onAddUser(enteredUsername, enteredAge);
+    const age = calculateAge(+enteredAge);
+    props.onAddUser(enteredUsername, age);
     setEnteredUsername('');
     setEnteredAge('');
+
+    
+    console.log('Name >> ', nameInputRef);
+    console.log('Age >> ', ageInputRef);
   };
 
   const usernameChangeHandler = (event) => {
@@ -44,6 +53,10 @@ const AddUser = (props) => {
     setError(null);
   };
 
+  const calculateAge = (age) => {
+    const currentYear = new Date().getFullYear();
+    return currentYear - age;
+  }
   return (
     <Wrappers>
       {error && (
@@ -61,13 +74,15 @@ const AddUser = (props) => {
             type="text"
             value={enteredUsername}
             onChange={usernameChangeHandler}
+            ref={nameInputRef}
           />
-          <label htmlFor="age">Age (Years)</label>
+          <label htmlFor="age">Age (Years) Ex: 1990</label>
           <input
             id="age"
             type="number"
             value={enteredAge}
             onChange={ageChangeHandler}
+            ref={ageInputRef}
           />
           <Button type="submit">Add User</Button>
         </form>
