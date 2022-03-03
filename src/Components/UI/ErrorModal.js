@@ -1,25 +1,46 @@
-import React from 'react';
+import React from "react";
+import ReactDOM from "react-dom";
+import Card from "./Card";
+import Button from "./Button";
+import classes from "./ErrorModal.module.css";
 
-import Card from './Card';
-import Button from './Button';
-import classes from './ErrorModal.module.css';
-
+/**
+ * The "ReactDOM.createPortal" is used for specific call the content out of "root" DOM in react 
+ */
+const BackDrop = (props) => {
+  return <div className={classes.backdrop} onClick={props.onConfirm} />;
+};
+const ModalOverLay = (props) => {
+  return (
+    <Card className={classes.modal}>
+      <header className={classes.header}>
+        <h2>{props.title}</h2>
+      </header>
+      <div className={classes.content}>
+        <p>{props.message}</p>
+      </div>
+      <footer className={classes.actions}>
+        <Button onClick={props.onConfirm}>Okay</Button>
+      </footer>
+    </Card>
+  );
+};
 const ErrorModal = (props) => {
   return (
-    <div>
-      <div className={classes.backdrop} onClick={props.onConfirm} />
-      <Card className={classes.modal}>
-        <header className={classes.header}>
-          <h2>{props.title}</h2>
-        </header>
-        <div className={classes.content}>
-          <p>{props.message}</p>
-        </div>
-        <footer className={classes.actions}>
-          <Button onClick={props.onConfirm}>Okay</Button>
-        </footer>
-      </Card>
-    </div>
+    <React.Fragment>
+      {ReactDOM.createPortal(
+        <BackDrop onConfirm={props.onConfirm} />,
+        document.getElementById("back-drop")
+      )}
+      {ReactDOM.createPortal(
+        <ModalOverLay
+          title={props.title}
+          message={props.message}
+          onConfirm={props.onConfirm}
+        />,
+        document.getElementById('overlay-root')
+      )}
+    </React.Fragment>
   );
 };
 
